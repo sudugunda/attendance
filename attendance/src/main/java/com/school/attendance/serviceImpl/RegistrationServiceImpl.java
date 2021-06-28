@@ -69,7 +69,7 @@ public class RegistrationServiceImpl implements RegistrationService{
 		
 		try {
 			LOGGER.debug(getClass().getSimpleName()+" : checkIfUserIsActive method called");
-			
+			LOGGER.debug(getClass().getSimpleName()+" : checking whether user is Active");
 			return dto.getIsActive()?true:false;
 		} catch (Exception e) {
 			e.printStackTrace();

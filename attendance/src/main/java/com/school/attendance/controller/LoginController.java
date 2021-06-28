@@ -88,7 +88,7 @@ public class LoginController {
 			e.printStackTrace();
 			return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
 		}	
-	}
+	}//Hello
 	
 	@DeleteMapping(value = "/delete")
 	public ResponseEntity<RegisterDTO> delete( @RequestBody String emailId ){
