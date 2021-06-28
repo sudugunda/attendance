@@ -1,5 +1,7 @@
 package com.school.attendance.serviceImpl;
 
+import java.util.Objects;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,20 +29,57 @@ public class RegistrationServiceImpl implements RegistrationService{
 		
 		try {
 			LOGGER.debug(getClass().getSimpleName()+" : registerUser method called");
-			LOGGER.debug(getClass().getSimpleName()+" : "+registerDto.toString());
 			
-			RegisterDTO dtoAfterSave = registrationDAO.save(registerDto);
-			
-			return dtoAfterSave;
+			if( validationService.validateRegistrationFields(registerDto) && checkIfUserExists(registerDto.getEmailId()) ) {
+				registerDto.setIsActive(true);
+				RegisterDTO dtoAfterSave = registrationDAO.save(registerDto);
+				return dtoAfterSave;
+			}
 			
 		} catch (Exception e) {
 			e.printStackTrace();
+			return null;
 		}
 		return null;
 	}
 
+	public Boolean checkIfUserExists(String emailId) {
+		
+		try {
+			LOGGER.debug(getClass().getSimpleName()+" : checkIfUserExists method called");
+			LOGGER.debug(getClass().getSimpleName()+" : "+emailId);
+			
+			RegisterDTO dtoAfterFetch = registrationDAO.findUserByEmail(emailId);
+			if(Objects.nonNull(dtoAfterFetch)) {
+				LOGGER.debug(getClass().getSimpleName()+" : user exists");
+				
+				return checkIfUserIsActive(dtoAfterFetch)?true:false;
+			}
+			
+			return Objects.nonNull(registrationDAO.findUserByEmail(emailId))?true:false;
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+			return false;
+		}
+		
+	}
+	
+	public Boolean checkIfUserIsActive(RegisterDTO dto) {
+		
+		try {
+			LOGGER.debug(getClass().getSimpleName()+" : checkIfUserIsActive method called");
+			
+			return dto.getIsActive()?true:false;
+		} catch (Exception e) {
+			e.printStackTrace();
+			return false;
+		}
+		
+	}
+	
 	@Override
-	public RegisterDTO checkIfUserExists(LoginDTO loginDTO) {
+	public RegisterDTO getUser(LoginDTO loginDTO) {
 		
 		try {
 			LOGGER.debug(getClass().getSimpleName()+" : checkIfUserExists method called");
@@ -48,12 +87,16 @@ public class RegistrationServiceImpl implements RegistrationService{
 			
 			RegisterDTO dtoAfterSave = registrationDAO.findUserByEmail(loginDTO.getUserName());
 			
-			return dtoAfterSave;
+			if( validationService.validateLoginFields(loginDTO) && checkIfUserExists(loginDTO.getUserName()) ) {
+				RegisterDTO dtoAfterFetch = registrationDAO.findUserByEmail(loginDTO.getUserName());
+				return dtoAfterSave;
+			}
 			
 		} catch (Exception e) {
 			e.printStackTrace();
 			return null;
 		}
+		return null;
 		
 	}
 
@@ -85,10 +128,13 @@ public class RegistrationServiceImpl implements RegistrationService{
 			LOGGER.debug(getClass().getSimpleName()+" : deleteUser method called");
 			LOGGER.debug(getClass().getSimpleName()+" : "+emailId);
 			
-			RegisterDTO dtoAfterFetch = registrationDAO.findUserByEmail(emailId);
-			RegisterDTO dtoAfterDelete = registrationDAO.save(dtoAfterFetch);
-			
-			return dtoAfterDelete;
+			if(checkIfUserExists(emailId)) {
+				RegisterDTO dtoAfterFetch = registrationDAO.findUserByEmail(emailId);
+				dtoAfterFetch.setIsActive(false);
+				return registrationDAO.save(dtoAfterFetch);
+				
+			}
+			return null;
 			
 		} catch (Exception e) {
 			e.printStackTrace();

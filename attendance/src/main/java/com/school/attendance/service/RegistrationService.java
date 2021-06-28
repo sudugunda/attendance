@@ -13,7 +13,7 @@ public interface RegistrationService {
 	
 	RegisterDTO registerUser(RegisterDTO registerDto);
 
-	RegisterDTO checkIfUserExists(LoginDTO loginDTO);
+	RegisterDTO getUser(LoginDTO loginDTO);
 
 	RegisterDTO updatePassword(UpdatePasswordDTO updateDTO);
 

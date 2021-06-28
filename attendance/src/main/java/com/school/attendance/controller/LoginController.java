@@ -1,8 +1,7 @@
 package com.school.attendance.controller;
 
-import java.util.Optional;
+import java.util.Objects;
 
-import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,9 +23,6 @@ import com.school.attendance.service.RegistrationService;
 @RestController
 @RequestMapping( value = "/" )
 public class LoginController {
-
-	@Autowired
-	private ModelMapper modelMapper;
 	
 	@Autowired
 	private RegistrationService registrationService;
@@ -38,11 +34,14 @@ public class LoginController {
 		
 		try {
 			LOGGER.debug(this.getClass().getSimpleName()+" : register method called");
-			LOGGER.debug(getClass().getSimpleName()+" : "+saveToDB);
+			LOGGER.debug(getClass().getSimpleName()+" : "+saveToDB.toString());
 			
 			RegisterDTO dtoAfterSave = registrationService.registerUser(saveToDB);
-
-			return new ResponseEntity<RegisterDTO>(dtoAfterSave, HttpStatus.OK);
+			
+			if(Objects.nonNull(dtoAfterSave)) {
+				return new ResponseEntity<RegisterDTO>(dtoAfterSave, HttpStatus.OK);
+			}
+			return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
 			
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -57,9 +56,12 @@ public class LoginController {
 			LOGGER.debug(this.getClass().getSimpleName()+" : register method called");
 			LOGGER.debug(getClass().getSimpleName()+" : "+loginDTO);
 			
-			RegisterDTO dtoAfterSave = registrationService.checkIfUserExists(loginDTO);
-
-			return new ResponseEntity<RegisterDTO>(dtoAfterSave, HttpStatus.OK);
+			RegisterDTO dtoAfterFetch = registrationService.getUser(loginDTO);
+			
+			if(Objects.nonNull(dtoAfterFetch)) {
+				return new ResponseEntity<RegisterDTO>(dtoAfterFetch, HttpStatus.OK);
+			}
+			return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
 			
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -77,7 +79,10 @@ public class LoginController {
 			
 			RegisterDTO dtoAfterUpdate = registrationService.updatePassword(updateDTO);
 
-			return new ResponseEntity<RegisterDTO>(dtoAfterUpdate, HttpStatus.OK);
+			if(Objects.nonNull(dtoAfterUpdate)) {
+				return new ResponseEntity<RegisterDTO>(dtoAfterUpdate, HttpStatus.OK);
+			}
+			return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
 			
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -92,9 +97,12 @@ public class LoginController {
 			LOGGER.debug(this.getClass().getSimpleName()+" : delete method called");
 			LOGGER.debug(getClass().getSimpleName()+" : "+emailId);
 			
-			RegisterDTO dtoAfterUpdate = registrationService.deleteUser(emailId);
+			RegisterDTO dtoAfterDelete = registrationService.deleteUser(emailId);
 
-			return new ResponseEntity<RegisterDTO>(dtoAfterUpdate, HttpStatus.OK);
+			if(Objects.nonNull(dtoAfterDelete)) {
+				return new ResponseEntity<RegisterDTO>(dtoAfterDelete, HttpStatus.OK);
+			}
+			return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
 			
 		} catch (Exception e) {
 			e.printStackTrace();

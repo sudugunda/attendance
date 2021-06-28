@@ -88,4 +88,18 @@ public class ValidationServiceImpl implements ValidationService {
 		}
 		
 	}
+	
+//	public Boolean checkIfUserIsActive(String email) {
+//		
+//		try {
+//			LOGGER.debug(getClass().getSimpleName()+" : checkIfUserIsActive method called");
+//			
+//			regist
+//			return false;
+//		} catch (Exception e) {
+//			e.printStackTrace();
+//			return false;
+//		}
+//		
+//	}
 }
