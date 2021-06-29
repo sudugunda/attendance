@@ -18,7 +18,7 @@ public class RegistrationServiceImpl implements RegistrationService{
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(RegistrationServiceImpl.class);
 	
-	@Autowired
+	@Autowired( required = true )
 	private RegistrationDAO registrationDAO;
 	
 	@Autowired

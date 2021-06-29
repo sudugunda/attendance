@@ -24,10 +24,10 @@ import com.school.attendance.service.RegistrationService;
 @RequestMapping( value = "/" )
 public class LoginController {
 	
+	private static final Logger LOGGER = LoggerFactory.getLogger(LoginController.class);
+	
 	@Autowired
 	private RegistrationService registrationService;
-	
-	private static final Logger LOGGER = LoggerFactory.getLogger(LoginController.class);
 	
 	@PostMapping(value = "/register")
 	public ResponseEntity<RegisterDTO> register( @RequestBody RegisterDTO saveToDB ){
@@ -88,7 +88,7 @@ public class LoginController {
 			e.printStackTrace();
 			return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
 		}	
-	}//Hello
+	}
 	
 	@DeleteMapping(value = "/delete")
 	public ResponseEntity<RegisterDTO> delete( @RequestBody String emailId ){
